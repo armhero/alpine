@@ -1,15 +1,16 @@
 #!/bin/sh
 
 set -e
+set -x
 
 usage() {
-	printf >&2 '%s: [-r release] [-t tag] [-m mirror] [-s] [-t tag]\n' "$0"
+	printf >&2 '%s: [-a arch] [-r release] [-t tag] [-m mirror] [-s] [-t tag]\n' "$0"
 	exit 1
 }
 
 tmp() {
-	TMP=$(mktemp -d ${TMPDIR:-/tmp}/alpine-docker-XXXXXXXXXX)
-	ROOTFS=$(mktemp -d ${TMPDIR:-/tmp}/alpine-docker-rootfs-XXXXXXXXXX)
+	TMP=$(mktemp -d ${TMPDIR:-$PWD}/alpine-docker-XXXXXXXXXX)
+	ROOTFS=$(mktemp -d ${TMPDIR:-$PWD}/alpine-docker-rootfs-XXXXXXXXXX)
 	trap "rm -rf $TMP $ROOTFS" EXIT TERM INT
 }
 
@@ -38,8 +39,11 @@ pack() {
 	docker run --rm armhero/alpine:$TAG sh -c "echo 'alpine:${REL} with id=${id} and tag=${TAG} created!\n'"
 }
 
-while getopts ":r:m:t:h" opt; do
+while getopts ":a:r:m:t:h" opt; do
 	case $opt in
+		a)
+		  ARCH=$OPTARG
+		  ;;
 		r)
 			REL=$OPTARG
 			;;
@@ -63,7 +67,7 @@ REL=${REL:-edge}
 MIRROR=${MIRROR:-http://mirror1.hs-esslingen.de/pub/Mirrors/alpine/}
 MAINREPO=$MIRROR/$REL/main
 ADDITIONALREPO=$MIRROR/$REL/community
-ARCH=${ARCH:-$(uname -m)}
+ARCH=${ARCH:-armhf}
 TAG=${TAG:-latest}
 
 echo "Create temp..."
