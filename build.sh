@@ -33,7 +33,8 @@ conf() {
 
 pack() {
 	local id
-	id=$(tar --numeric-owner -C $ROOTFS -c . | docker import - armhero/alpine:$REL)
+	tar --numeric-owner -C $ROOTFS -c $TMP/rootfs.tar .
+	id=$(docker import $TMP/rootfs.tar armhero/alpine:$REL)
 
 	docker tag $id armhero/alpine:$TAG
 	docker run --rm armhero/alpine:$TAG sh -c "echo 'alpine:${REL} with id=${id} and tag=${TAG} created!\n'"
