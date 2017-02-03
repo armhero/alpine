@@ -64,7 +64,7 @@ while getopts ":a:r:m:t:h" opt; do
 done
 
 REL=${REL:-edge}
-MIRROR=${MIRROR:-http://mirror1.hs-esslingen.de/pub/Mirrors/alpine/}
+MIRROR=${MIRROR:-http://mirror1.hs-esslingen.de/pub/Mirrors/alpine}
 MAINREPO=$MIRROR/$REL/main
 ADDITIONALREPO=$MIRROR/$REL/community
 ARCH=${ARCH:-armhf}
